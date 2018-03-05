@@ -1,3 +1,4 @@
+
 function accumulatorFactory(){
 	var result = 0;
 
