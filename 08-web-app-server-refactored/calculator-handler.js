@@ -1,10 +1,9 @@
 var querystring = require('querystring'),
 	calculator = require('./calculator');
 
-module.exports = function(req, res){
+module.exports = function(req, res, next){
 
 	if (req.urlObj.pathname === '/calculator' && req.method === 'GET'){
-		console.log('[@calculatorHandler] - serving calculator requests');
 		var queryData = querystring.parse(req.urlObj.query),
 			op = queryData.op,
 			n1 = parseInt(queryData.n1),
@@ -13,8 +12,8 @@ module.exports = function(req, res){
 		var result = calculator[op](n1, n2);
 		res.write(result.toString());
 		res.end();
+		next();
 	} else if (req.urlObj.pathname === '/calculator' && req.method === 'POST'){
-		console.log('[@calculatorHandler] - serving calculator requests');
 		var rawData = '';
 		req.on('data', function(chunk){
 			rawData += chunk;
@@ -29,6 +28,9 @@ module.exports = function(req, res){
 			var result = calculator[op](n1, n2);
 			res.write(result.toString());
 			res.end();
+			next();
 		});
+	} else {
+		next();
 	}
 };
