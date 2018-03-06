@@ -1,7 +1,7 @@
 var path = require('path'),
 	fs = require('fs');
 	
-	
+
 var staticExtns = ['.html', '.css', '.js', '.png', '.jpg', '.ico', '.xml', '.json'];
 function isStatic(resource){
 	var resourceExtn = path.extname(resource);
@@ -18,6 +18,15 @@ module.exports = function(req, res){
 			res.end();
 			return;
 		}
-		fs.createReadStream(resourcePath).pipe(res);
+		//fs.createReadStream(resourcePath).pipe(res);
+		var stream = fs.createReadStream(resourcePath);
+		stream.on('data', function(chunk){
+			console.log('[@serveStatic - serving data chunk to the response stream');
+			res.write(chunk);
+		});
+		stream.on('end', function(){
+			console.log('[@serveStatic - ending the response stream');
+			res.end();
+		});
 	}
 }
