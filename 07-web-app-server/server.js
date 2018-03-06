@@ -12,11 +12,12 @@ function isStatic(resource){
 }
 var server = http.createServer(function(req, res){
 	var urlObj = url.parse(req.url);
-	console.log(req.method, '\t', urlObj.pathname);
 
+	console.log(req.method, '\t', urlObj.pathname);
+	urlObj.pathname = urlObj.pathname === '/' ? '/index.html' : urlObj.pathname;
 	//static resource
 	if (isStatic(urlObj.pathname)){
-		var resourcePath = path.join(__dirname, urlObj.pathname === '/' ? '/index.html' : urlObj.pathname);
+		var resourcePath = path.join(__dirname, urlObj.pathname);
 		if (!fs.existsSync(resourcePath)){
 			res.statusCode = 404;
 			res.end();
